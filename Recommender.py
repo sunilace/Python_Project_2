@@ -98,7 +98,7 @@ class Recommender:
                 # Left-alignment of the title and runtime of movies within their respective columns
                 tv_list += (f"{show.get_title()}{' ' * (max_title_length - len(show.get_title()) + 5)}"
                                f"{show.get_duration()}\n")
-        print(tv_list)
+        return tv_list
 
     def getBookList(self):
         """
