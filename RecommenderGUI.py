@@ -1,7 +1,12 @@
+# Author: Sunil Gupta, Sainithya Surasani, Nihal Reddy Akula.
+# Date: 5/5/2024
+# Description: Python Project 2 code.
+
+
 from Recommender import Recommender
 import tkinter as tk
 from tkinter import ttk
-import time
+from tkinter import messagebox
 
 
 class RecommenderGUI:
@@ -121,7 +126,7 @@ class RecommenderGUI:
         row_five.pack(anchor='w')
 
         row_six = tk.Frame(movie_tv_shows)
-        self.search_show_button = tk.Button(row_six, text="Search")
+        self.search_show_button = tk.Button(row_six, text="Search", command=self.searchShows)
         self.search_show_button.pack(side='left', padx=2, pady=2, fill='x')
         row_six.pack(anchor='w')
 
@@ -161,7 +166,7 @@ class RecommenderGUI:
         row_three.pack(anchor='w')
 
         row_four = tk.Frame(search_books)
-        self.search_show_button_b = tk.Button(row_four, text="Search")
+        self.search_show_button_b = tk.Button(row_four, text="Search", command=self.searchBooks)
         self.search_show_button_b.pack(side='left', padx=2, pady=2, fill='x')
         row_four.pack(anchor='w')
 
@@ -194,7 +199,7 @@ class RecommenderGUI:
         row_two.pack(anchor='w')
 
         row_four = tk.Frame(recomm)
-        self.search_show_button_r = tk.Button(row_four, text="Get Recommendation")
+        self.search_show_button_r = tk.Button(row_four, text="Get Recommendation", command=self.getRecommendations)
         self.search_show_button_r.pack(side='left', padx=2, pady=2, fill='x')
         row_four.pack(anchor='w')
 
@@ -207,17 +212,13 @@ class RecommenderGUI:
         self.search_results_text_r.config(yscrollcommand=scrollbar.set)
 
 
-    def run(self):
-        self.main_window.mainloop()
-
-
     def buttons(self):
         self.button = tk.Frame(self.main_window)
         self.shows = tk.Button(self.button, text='Load Shows', command=self.loadshows)
-        self.books = tk.Button(self.button, text='Load Books')
-        self.recommen = tk.Button(self.button, text='Load Recommendations')
-        self.info = tk.Button(self.button, text='Information')
-        self.quit = tk.Button(self.button, text='Quit')
+        self.books = tk.Button(self.button, text='Load Books', command=self.loadBooks)
+        self.recommen = tk.Button(self.button, text='Load Recommendations', command=self.loadAssociations)
+        self.info = tk.Button(self.button, text='Information', command=self.creditInfoBox)
+        self.quit = tk.Button(self.button, text='Quit', command=self.main_window.quit)
         self.button.pack(padx=2, side="bottom", pady=5)
         self.shows.pack(side="left", padx=80)
         self.books.pack(side="left", padx=80)
@@ -229,39 +230,132 @@ class RecommenderGUI:
     def loadshows(self):
         self.first_entry.configure(state=tk.NORMAL)
         self.second_entry.configure(state=tk.NORMAL)
-        k = '''
-1
-                2
-                3
-                4
-                5
-                6
-                7
-                8
-                9
-                10
-                11
-                12
-                13
-                14
-                15
-                16
-                17
-                18
-                19
-                20
-                21
-                22
-                23
-                24
-                25
-                '''
+        self.firsts_entry.configure(state=tk.NORMAL)
+        self.seconds_entry.configure(state=tk.NORMAL)
+
+        self.rec_obj.loadShows()
+
+        movie_names = self.rec_obj.getMovieList()
+        movie_statistics = self.rec_obj.getMovieStats()
+        tvshow_name = self.rec_obj.getTVList()
+        tvshow_statistics = self.rec_obj.getTVStats()
+
         self.first_entry.delete("1.0", "end")
-        self.first_entry.insert("1.0", k)
+        for i in movie_names:
+            self.first_entry.insert(tk.END, i + '\n')
+
         self.second_entry.delete("1.0", "end")
+        for i in movie_statistics:
+            self.second_entry.insert(tk.END, i + '\n')
+
+        self.firsts_entry.delete("1.0", "end")
+        for i in tvshow_name:
+            self.firsts_entry.insert(tk.END, i + '\n')
+
+        self.seconds_entry.delete("1.0", "end")
+        for i in tvshow_statistics:
+            self.seconds_entry.insert(tk.END, i + '\n')
+
         self.first_entry.configure(state=tk.DISABLED)
         self.second_entry.configure(state=tk.DISABLED)
+        self.firsts_entry.configure(state=tk.DISABLED)
+        self.seconds_entry.configure(state=tk.DISABLED)
 
 
-gui = RecommenderGUI()
-gui.run()
+    def loadBooks(self):
+        self.firstb_entry.configure(state=tk.NORMAL)
+        self.secondb_entry.configure(state=tk.NORMAL)
+
+        self.rec_obj.loadBooks()
+
+        books_names = self.rec_obj.getBookList()
+        books_statistics = self.rec_obj.getBookStats()
+
+        self.firstb_entry.delete("1.0", "end")
+        for i in books_names:
+            self.firstb_entry.insert(tk.END, i + '\n')
+
+        self.secondb_entry.delete("1.0", "end")
+        for i in books_statistics:
+            self.secondb_entry.insert(tk.END, i + '\n')
+
+        self.firstb_entry.configure(state=tk.DISABLED)
+        self.secondb_entry.configure(state=tk.DISABLED)
+
+
+    def loadAssociations(self):
+        self.rec_obj.loadAssociations()
+
+    def creditInfoBox(self):
+        messagebox.showinfo("Project details","Group Members:\n1. Sunil Virendra Gupta\n2.Sainithya Surasani\n3.Nihal Reddy Akula\n\nProjected completed on: 5/5/2024")
+
+
+    def searchShows(self):
+        type_show = self.type_combobox.get()
+        if type_show == "":
+            type_show = None
+        title = self.title_entry.get()
+        if title == "":
+            title = None
+        director = self.director_entry.get()
+        if director == "":
+            director = None
+        actor = self.actor_entry.get()
+        if actor == "":
+            actor = None
+        genre = self.genre_entry.get()
+        if genre == "":
+            genre = None
+        stri = self.rec_obj.searchTVMovies(type_show, title, director, actor, genre)
+        self.search_results_text.configure(state=tk.NORMAL)
+        if len(stri) > 0:
+            self.search_results_text.delete("1.0", "end")
+            for i in stri:
+                self.search_results_text.insert(tk.END, i + '\n')
+        self.search_results_text.configure(state=tk.DISABLED)
+
+
+    def searchBooks(self):
+        title = self.title_entry_b.get()
+        if title == "":
+            title = None
+        author = self.author_entry_b.get()
+        if author == "":
+            author = None
+        publisher = self.publisher_entry_b.get()
+        if publisher == "":
+            publisher = None
+        stri = self.rec_obj.searchBooks(title, author, publisher)
+        self.search_results_text_b.configure(state=tk.NORMAL)
+        if len(stri) > 0:
+            self.search_results_text_b.delete("1.0", "end")
+            for i in stri:
+                self.search_results_text_b.insert(tk.END, i + '\n')
+        self.search_results_text_b.configure(state=tk.DISABLED)
+
+
+    def getRecommendations(self):
+        type_show = self.type_combobox_r.get()
+        if type_show == "":
+            type_show = None
+        title = self.title_entry_r.get()
+        if title == "":
+            title = None
+        stri = self.rec_obj.getRecommendations(type_show, title)
+        print(stri)
+        self.search_results_text_r.configure(state=tk.NORMAL)
+        self.search_results_text_r.delete("1.0", "end")
+        self.search_results_text_r.insert(tk.END, stri)
+        self.search_results_text_r.configure(state=tk.DISABLED)
+
+
+    def run(self):
+        self.main_window.mainloop()
+
+
+def main():
+    gui = RecommenderGUI()
+    gui.run()
+
+
+main()
