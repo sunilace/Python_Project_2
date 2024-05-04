@@ -1,75 +1,113 @@
+# Author: Sunil Gupta, Sainithya Surasani, Nihal Reddy Akula.
+# Date: 5/5/2024
+# Description: Python Project 2 code.
+
+
 from Media import Media
 
 class Show(Media):
+    # Constructer function.
     def __init__(self, media_id, show_type, title, directors, actors, avg_rating, country_code, added_date, release_year, rating, duration, genres, description):
+        '''
+        :param media_id:  To store Media ID.
+        :type: String
+        :param show_type: Type of show.
+        :type: String
+        :param title: To store media Title.
+        :type: String
+        :param directors: Director of show.
+        :type: String
+        :param actors: Actors involved in the show.
+        :type: String
+        :param avg_rating: Rating for media.
+        :type: Float
+        :param country_code: Country.
+        :type: String
+        :param added_date: Date added.
+        :type: String
+        :param release_year: Release year of the movie.
+        :type: Int
+        :param rating: Rating count of show.
+        :type: String
+        :param duration: Duration of movie.
+        :type: String
+        :param genres: Genres of the show.
+        :type: String
+        :param description: Description of the show.
+        :type: String
+        '''
         super().__init__(media_id, title, avg_rating)
-        self._show_type = show_type
-        self._directors = directors
-        self._actors = actors
-        self._country_code = country_code
-        self._added_date = added_date
-        self._release_year = release_year
-        self._rating = rating
-        self._duration = duration
-        self._genres = genres
-        self._description = description
+        self.__show_type = show_type
+        self.__directors = directors
+        self.__actors = actors
+        self.__country_code = country_code
+        self.__added_date = added_date
+        self.__release_year = release_year
+        self.__rating = rating
+        self.__duration = duration
+        self.__genres = genres
+        self.__description = description
 
+    # All the getter and setter function for member variables.
     def get_show_type(self):
-        return self._show_type
+        return self.__show_type
 
     def set_show_type(self, show_type):
-        self._show_type = show_type
+        self.__show_type = show_type
 
     def get_directors(self):
-        return self._directors
+        return self.__directors
 
     def set_directors(self, directors):
-        self._directors = directors
+        self.__directors = directors
 
     def get_actors(self):
-        return self._actors
+        return self.__actors
 
     def set_actors(self, actors):
-        self._actors = actors
+        self.__actors = actors
 
     def get_country_code(self):
-        return self._country_code
+        return self.__country_code
 
     def set_country_code(self, country_code):
-        self._country_code = country_code
+        self.__country_code = country_code
 
     def get_added_date(self):
-        return self._added_date
+        return self.__added_date
 
     def set_added_date(self, added_date):
-        self._added_date = added_date
+        self.__added_date = added_date
 
     def get_release_year(self):
-        return self._release_year
+        return self.__release_year
 
     def set_release_year(self, release_year):
-        self._release_year = release_year
+        self.__release_year = release_year
 
     def get_rating(self):
-        return self._rating
+        if self.__rating == "":
+            return "None"
+        else:
+            return self.__rating
 
     def set_rating(self, rating):
-        self._rating = rating
+        self.__rating = rating
 
     def get_duration(self):
-        return self._duration
+        return self.__duration
 
     def set_duration(self, duration):
-        self._duration = duration
+        self.__duration = duration
 
     def get_genres(self):
-        return self._genres
+        return self.__genres
 
     def set_genres(self, genres):
-        self._genres = genres
+        self.__genres = genres
 
     def get_description(self):
-        return self._description
+        return self.__description
 
     def set_description(self, description):
-        self._description = description
+        self.__description = description
