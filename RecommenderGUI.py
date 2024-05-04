@@ -7,6 +7,8 @@ from Recommender import Recommender
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class RecommenderGUI:
@@ -24,6 +26,8 @@ class RecommenderGUI:
         self.searchbooks()
         self.recommendation()
         self.buttons()
+        self.loadShows_flag = 0
+        self.rating()
 
     def movie(self):
         movie_tab = ttk.Frame(self.nb)
@@ -212,6 +216,93 @@ class RecommenderGUI:
         self.search_results_text_r.config(yscrollcommand=scrollbar.set)
 
 
+    def rating(self):
+        ratings = ttk.Frame(self.nb)
+        self.nb.add(ratings, text="Ratings")
+        pie_chart = tk.Frame(ratings)
+        pie_chart.pack()
+        self.generate_pie_chart = tk.Button(pie_chart, text="Generate Pie Chart", command=self.getPieChart)
+        self.generate_pie_chart.pack(padx=5, pady=5)
+        pie_frame = tk.Frame(ratings)
+        pie_frame.pack()
+        self.pie1 = tk.Canvas(pie_frame, height=250, width=250)
+        self.pie1.pack(side='left', padx=5, pady=30)
+        self.pie2 = tk.Canvas(pie_frame, height=200, width=200)
+        self.pie2.pack(side='right', padx=5, pady=30)
+
+
+    def getPieChart(self):
+        if self.loadShows_flag == 0:
+            messagebox.showwarning("Error", f"Please load Show file before generating.")
+            return
+        movie = self.rec_obj.getMovieStats()
+        shows = self.rec_obj.getTVStats()
+        movie_label = []
+        movie_per = []
+        show_label = []
+        show_per = []
+        for i in range(1, len(movie)):
+            if movie[i] == "":
+                break
+            st = movie[i].split(" ")
+            movie_label.append(st[0])
+            movie_per.append(float(st[2][0:len(st[2])-1]))
+        for i in range(1, len(shows)):
+            if shows[i] == "":
+                break
+            st = shows[i].split(" ")
+            show_label.append(st[0])
+            show_per.append(float(st[2][0:len(st[2])-1]))
+
+        pairs = list(zip(movie_label, movie_per))
+        sorted_pairs = sorted(pairs, key=lambda x: x[1])
+        movie_label, movie_per = zip(*sorted_pairs)
+
+        pairs = list(zip(show_label, show_per))
+        sorted_pairs = sorted(pairs, key=lambda x: x[1])
+        show_label, show_per = zip(*sorted_pairs)
+
+        movie_label = list(movie_label)
+        movie_per = list(movie_per)
+        show_label = list(show_label)
+        show_per = list(show_per)
+
+        label = []
+        perc = []
+        while movie_per:
+            perc.append(movie_per.pop())
+            label.append(movie_label.pop())
+            if movie_per:
+                perc.append(movie_per.pop(0))
+                label.append(movie_label.pop(0))
+        movie_per = perc
+        movie_label = label
+
+        label = []
+        perc = []
+        while show_per:
+            perc.append(show_per.pop())
+            label.append(show_label.pop())
+            if show_per:
+                perc.append(show_per.pop(0))
+                label.append(show_label.pop(0))
+        show_per = perc
+        show_label = label
+
+        self.pie1.delete("all")
+        self.pie2.delete("all")
+        pie1, ax1 = plt.subplots(figsize=(7, 7))
+        ax1.pie(movie_per, labels=movie_label, autopct='%1.2f%%', startangle=90)
+        ax1.set_title("Movies Ratings pie chart:")
+        pie_chart1 = FigureCanvasTkAgg(pie1, master=self.pie1)
+        pie_chart1.get_tk_widget().pack()
+        pie2, ax2 = plt.subplots(figsize=(7, 7))
+        ax2.pie(show_per, labels=show_label, autopct='%1.2f%%', startangle=90)
+        ax2.set_title("Shows Ratings pie chart:")
+        pie_chart2 = FigureCanvasTkAgg(pie2, master=self.pie2)
+        pie_chart2.get_tk_widget().pack()
+
+
     def buttons(self):
         self.button = tk.Frame(self.main_window)
         self.shows = tk.Button(self.button, text='Load Shows', command=self.loadshows)
@@ -228,6 +319,7 @@ class RecommenderGUI:
 
 
     def loadshows(self):
+        self.loadShows_flag = 1
         self.first_entry.configure(state=tk.NORMAL)
         self.second_entry.configure(state=tk.NORMAL)
         self.firsts_entry.configure(state=tk.NORMAL)
@@ -263,6 +355,7 @@ class RecommenderGUI:
 
 
     def loadBooks(self):
+        self.loadBooks_flag = 1
         self.firstb_entry.configure(state=tk.NORMAL)
         self.secondb_entry.configure(state=tk.NORMAL)
 
@@ -342,7 +435,6 @@ class RecommenderGUI:
         if title == "":
             title = None
         stri = self.rec_obj.getRecommendations(type_show, title)
-        print(stri)
         self.search_results_text_r.configure(state=tk.NORMAL)
         self.search_results_text_r.delete("1.0", "end")
         self.search_results_text_r.insert(tk.END, stri)
