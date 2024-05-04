@@ -1,10 +1,25 @@
+# Author: Sunil Gupta, Sainithya Surasani, Nihal Reddy Akula.
+# Date: 5/5/2024
+# Description: Python Project 2 code.
+
+
 class Media:
+    # Constructer function.
     def __init__(self, media_id, title, avg_rating):
+        '''
+        :param media_id: To store Media ID.
+        :type: String
+        :param title: To store media Title.
+        :type: String
+        :param avg_rating: Rating for media.
+        :type: Float
+        '''
         self._id = media_id
         self._title = title
         self._avg_rating = avg_rating
 
 
+    # All the getter and setter function for member variables.
     def get_id(self):
         return self._id
 
