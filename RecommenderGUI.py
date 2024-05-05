@@ -18,19 +18,20 @@ class RecommenderGUI:
         self.__main_window = tk.Tk()
         self.__main_window.title("Media Recommender")
         self.__main_window.geometry("1200x800")
+        self.buttons()
         # Creating notebook.
         self.__nb = ttk.Notebook(self.__main_window)
         self.__nb.pack(fill=tk.BOTH, expand=True)
         # To keep track whether the shows are loaded or not for Rating notebook tab.
         self.__loadshows_flag = 0
         self.__loadassociations = 0
+
         self.movie()
         self.showss()
         self.bookss()
         self.searchshows()
         self.searchbooks()
         self.recommendation()
-        self.buttons()
         self.rating()
 
     # To create GUI for Movie Notebook tab.
